@@ -1,0 +1,1324 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>$DURIKOVICH — Свой Живой Интернет / Token on TON</title>
+<meta name="description" content="$DURIKOVICH — мемкоин на сети TON в поддержку музыкальных треков Павла Дурова под псевдонимом Durikovich." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;600&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#efe3c7;
+    --cream-2:#e7d6b2;
+    --paper:#f5ead0;
+    --ink:#141210;
+    --ink-soft:#2b2622;
+    --orange:#e9612a;
+    --orange-deep:#c84a1a;
+    --rust:#a83a17;
+    --gold:#d6a23e;
+    --line: rgba(20,18,16,.18);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--cream);color:var(--ink);font-family:"Oswald",sans-serif}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(233,97,42,.08), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(233,97,42,.06), transparent 60%),
+      var(--cream);
+    overflow-x:hidden;
+  }
+  /* paper grain */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(20,18,16,.025) 0 1px, transparent 1px 3px),
+      radial-gradient(circle at 20% 30%, rgba(20,18,16,.04), transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(20,18,16,.03), transparent 50%);
+    mix-blend-mode:multiply;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:2;
+    background:
+      radial-gradient(ellipse at center, transparent 50%, rgba(20,18,16,.18) 100%);
+    mix-blend-mode:multiply;
+  }
+
+  .container{max-width:1240px;margin:0 auto;padding:0 28px;position:relative;z-index:3}
+
+  /* TICKER */
+  .ticker{
+    background:var(--ink);color:var(--paper);
+    border-bottom:3px solid var(--orange);
+    overflow:hidden;position:relative;z-index:5;
+  }
+  .ticker-track{
+    display:flex;gap:48px;white-space:nowrap;
+    padding:10px 0;
+    animation:tk 40s linear infinite;
+    font-family:"Bebas Neue",sans-serif;letter-spacing:.08em;font-size:18px;
+  }
+  .ticker-track span{display:inline-flex;align-items:center;gap:14px}
+  .ticker-track i{width:6px;height:6px;background:var(--orange);border-radius:50%;display:inline-block;font-style:normal}
+  @keyframes tk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* TOP BAR */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 28px;border-bottom:2px solid var(--ink);
+    position:relative;z-index:4;background:var(--cream);
+  }
+  .brand{display:flex;align-items:center;gap:12px;font-family:"Bebas Neue",sans-serif;letter-spacing:.05em;font-size:22px}
+  .brand .dot{width:14px;height:14px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 3px var(--ink)}
+  .nav{display:flex;gap:22px;align-items:center;font-family:"Bebas Neue",sans-serif;letter-spacing:.08em;font-size:16px}
+  .nav a{color:var(--ink);text-decoration:none;border-bottom:2px solid transparent;padding-bottom:2px}
+  .nav a:hover{border-bottom-color:var(--orange)}
+  .lang{display:inline-flex;border:2px solid var(--ink);padding:0;}
+  .lang button{
+    font-family:"Bebas Neue",sans-serif;letter-spacing:.1em;font-size:14px;
+    background:transparent;color:var(--ink);border:0;padding:6px 12px;cursor:pointer;
+  }
+  .lang button.active{background:var(--ink);color:var(--paper)}
+
+  /* HERO */
+  .hero{padding:48px 0 24px;position:relative}
+  .hero-grid{display:grid;grid-template-columns: 1.05fr .95fr;gap:36px;align-items:center}
+  .hero-art{
+    position:relative;border:3px solid var(--ink);
+    background:var(--paper);
+    aspect-ratio:1/1;overflow:hidden;
+    box-shadow: 12px 12px 0 var(--ink);
+  }
+  .hero-art img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.05) saturate(.95)}
+  .stereo{
+    position:absolute;top:14px;right:14px;border:2px solid var(--ink);background:var(--paper);
+    padding:6px 8px;font-family:"Bebas Neue",sans-serif;letter-spacing:.1em;font-size:12px;line-height:1.05;
+    text-align:center;
+  }
+  .stereo strong{font-size:20px;display:block}
+  .hero-copy h1{
+    font-family:"Bebas Neue",sans-serif;letter-spacing:0;
+    font-size:clamp(56px,8vw,108px);line-height:.92;margin:0 0 14px;
+    text-transform:uppercase;
+  }
+  .hero-copy h1 .tag{
+    display:inline-block;background:var(--orange);color:var(--paper);
+    padding:0 14px;margin-top:6px;
+  }
+  .hero-copy .lede{
+    font-family:"Special Elite",monospace;font-size:18px;line-height:1.5;
+    margin:18px 0 22px;max-width:540px;
+  }
+  .stamp{
+    display:inline-flex;align-items:center;gap:10px;
+    border:2px solid var(--ink);padding:6px 12px;
+    font-family:"Bebas Neue",sans-serif;letter-spacing:.12em;font-size:14px;
+    background:var(--paper);
+  }
+  .stamp .pulse{width:8px;height:8px;border-radius:50%;background:#16a34a;box-shadow:0 0 0 0 rgba(22,163,74,.7);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(22,163,74,.7)}70%{box-shadow:0 0 0 10px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
+
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px}
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:"Bebas Neue",sans-serif;letter-spacing:.1em;font-size:18px;
+    padding:14px 22px;border:2px solid var(--ink);text-decoration:none;color:var(--ink);
+    background:var(--paper);cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+  .btn:active{transform:translate(0,0);box-shadow:2px 2px 0 var(--ink)}
+  .btn.primary{background:var(--orange);color:var(--paper)}
+  .btn.dark{background:var(--ink);color:var(--paper)}
+
+  /* CA strip */
+  .ca-strip{
+    margin-top:34px;border:2px solid var(--ink);background:var(--paper);
+    display:grid;grid-template-columns: auto 1fr auto;align-items:center;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .ca-strip .lbl{
+    background:var(--ink);color:var(--paper);
+    padding:14px 18px;font-family:"Bebas Neue",sans-serif;letter-spacing:.14em;font-size:14px;
+    border-right:2px solid var(--ink);align-self:stretch;display:flex;align-items:center;gap:8px;
+  }
+  .ca-strip .ca{
+    font-family:"JetBrains Mono",monospace;font-size:13px;padding:10px 16px;
+    word-break:break-all;color:var(--ink-soft);
+  }
+  .ca-strip .copy{
+    border:0;border-left:2px solid var(--ink);align-self:stretch;
+    padding:0 18px;background:var(--orange);color:var(--paper);cursor:pointer;
+    font-family:"Bebas Neue",sans-serif;letter-spacing:.12em;font-size:14px;
+  }
+  .ca-strip .copy:hover{background:var(--orange-deep)}
+
+  /* SECTIONS */
+  section{padding:64px 0;position:relative}
+  .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:32px;border-bottom:2px solid var(--ink);padding-bottom:14px}
+  .section-head h2{
+    font-family:"Bebas Neue",sans-serif;font-size:clamp(44px,6vw,72px);line-height:.95;margin:0;letter-spacing:0;
+    text-transform:uppercase;
+  }
+  .section-head .num{
+    font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.2em;color:var(--rust);
+  }
+
+  /* PLAYER */
+  .tracks-dots{display:none}
+  .tracks{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
+  .track{
+    background:var(--paper);border:2px solid var(--ink);box-shadow:8px 8px 0 var(--ink);
+    display:flex;flex-direction:column;
+  }
+  .track .cover{position:relative;aspect-ratio:1/1;overflow:hidden;border-bottom:2px solid var(--ink)}
+  .track .cover img{width:100%;height:100%;object-fit:cover;display:block}
+  .track .play-overlay{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:rgba(20,18,16,0);transition:background .2s;cursor:pointer;
+  }
+  .track:hover .play-overlay{background:rgba(20,18,16,.18)}
+  .play-btn{
+    width:78px;height:78px;border-radius:50%;background:var(--orange);
+    border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;
+    box-shadow:4px 4px 0 var(--ink);cursor:pointer;color:var(--paper);
+    transition:transform .12s;
+  }
+  .play-btn:hover{transform:scale(1.05)}
+  .play-btn svg{display:block}
+  .track-info{padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+  .track-info .num{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.2em;color:var(--rust)}
+  .track-info .title{font-family:"Bebas Neue",sans-serif;font-size:28px;letter-spacing:.02em;line-height:1;text-transform:uppercase}
+  .track-info .artist{font-family:"Special Elite",monospace;font-size:13px;color:var(--ink-soft)}
+  .track .progress{
+    height:6px;background:var(--cream-2);position:relative;cursor:pointer;border-top:2px solid var(--ink);
+  }
+  .track .progress .fill{position:absolute;left:0;top:0;bottom:0;background:var(--orange);width:0}
+  .track .meta{display:flex;align-items:center;gap:10px;padding:8px 20px 16px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-soft)}
+  .like-btn{
+    margin-left:auto;display:inline-flex;align-items:center;gap:6px;
+    background:transparent;border:2px solid var(--ink);
+    padding:5px 10px;cursor:pointer;
+    font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;
+    color:var(--ink);transition:background .15s, color .15s, transform .12s;
+  }
+  .like-btn:hover{background:var(--cream-2);transform:translateY(-1px)}
+  .like-btn:active{transform:translateY(0)}
+  .like-btn svg{width:14px;height:14px;display:block;transition:transform .25s}
+  .like-btn.liked{background:var(--orange);color:var(--paper)}
+  .like-btn.liked svg{fill:var(--paper);animation:hb .35s ease}
+  @keyframes hb{0%{transform:scale(1)}40%{transform:scale(1.4)}100%{transform:scale(1)}}
+
+  /* WHY BULLISH */
+  .bull-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .bull{
+    background:var(--paper);border:2px solid var(--ink);padding:26px;position:relative;
+    box-shadow:6px 6px 0 var(--ink);
+  }
+  .bull .big{
+    font-family:"Bebas Neue",sans-serif;font-size:64px;line-height:1;color:var(--orange);
+    -webkit-text-stroke:2px var(--ink);
+  }
+  .bull h3{font-family:"Bebas Neue",sans-serif;font-size:24px;margin:6px 0 10px;letter-spacing:.02em;text-transform:uppercase}
+  .bull p{font-family:"Special Elite",monospace;font-size:14px;line-height:1.55;margin:0;color:var(--ink-soft)}
+
+  /* TONOMICS */
+  .tonomics{display:grid;grid-template-columns:1.3fr 1fr;gap:36px;align-items:start}
+  .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .stat{
+    background:var(--paper);border:2px solid var(--ink);padding:18px 20px;box-shadow:5px 5px 0 var(--ink);
+  }
+  .stat .k{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;color:var(--rust)}
+  .stat .v{font-family:"Bebas Neue",sans-serif;font-size:34px;line-height:1.05;margin-top:4px}
+  .stat .s{font-family:"Special Elite",monospace;font-size:12px;color:var(--ink-soft);margin-top:4px}
+  .pie-card{
+    background:var(--paper);border:2px solid var(--ink);padding:22px;box-shadow:6px 6px 0 var(--ink);
+  }
+  .pie-wrap{display:flex;gap:18px;align-items:center}
+  .pie{width:170px;height:170px;flex:0 0 170px;border:2px solid var(--ink);border-radius:50%;background:
+    conic-gradient(var(--orange) 0 50%, var(--ink) 50% 75%, var(--gold) 75% 90%, var(--rust) 90% 100%);
+    box-shadow:4px 4px 0 var(--ink);
+  }
+  .legend{display:flex;flex-direction:column;gap:8px;font-family:"Special Elite",monospace;font-size:13px}
+  .legend .row{display:flex;align-items:center;gap:10px}
+  .sw{width:14px;height:14px;border:2px solid var(--ink);display:inline-block}
+
+  /* SOCIALS */
+  .social-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .social{
+    background:var(--paper);border:2px solid var(--ink);padding:22px;
+    box-shadow:5px 5px 0 var(--ink);text-decoration:none;color:var(--ink);
+    display:flex;flex-direction:column;gap:10px;transition:transform .12s, box-shadow .12s;
+  }
+  .social:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+  .social .top{display:flex;align-items:center;justify-content:space-between}
+  .social .name{font-family:"Bebas Neue",sans-serif;font-size:24px;letter-spacing:.05em;text-transform:uppercase}
+  .social .handle{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-soft)}
+  .social .ic{
+    width:42px;height:42px;border:2px solid var(--ink);background:var(--orange);color:var(--paper);
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  /* ROADMAP */
+  .road{position:relative;border:2px solid var(--ink);background:var(--paper);padding:32px;box-shadow:8px 8px 0 var(--ink)}
+  .road-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;position:relative}
+  .road-grid::before{content:"";position:absolute;left:0;right:0;top:30px;height:3px;background:var(--ink);z-index:0}
+  .stage{position:relative;z-index:1;display:flex;flex-direction:column;gap:10px}
+  .stage .pin{
+    width:60px;height:60px;border-radius:50%;background:var(--cream);border:3px solid var(--ink);
+    display:flex;align-items:center;justify-content:center;font-family:"Bebas Neue",sans-serif;font-size:22px;
+  }
+  .stage.done .pin{background:var(--orange);color:var(--paper)}
+  .stage h4{font-family:"Bebas Neue",sans-serif;font-size:22px;margin:6px 0 4px;letter-spacing:.02em;text-transform:uppercase}
+  .stage p{font-family:"Special Elite",monospace;font-size:13px;color:var(--ink-soft);margin:0;line-height:1.5}
+
+  /* HOW TO BUY */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .step{
+    background:var(--paper);border:2px solid var(--ink);padding:22px;box-shadow:5px 5px 0 var(--ink);
+    position:relative;
+  }
+  .step .n{
+    position:absolute;top:-18px;left:-18px;
+    width:46px;height:46px;background:var(--ink);color:var(--orange);
+    font-family:"Bebas Neue",sans-serif;font-size:24px;
+    display:flex;align-items:center;justify-content:center;border:2px solid var(--ink);
+  }
+  .step h4{font-family:"Bebas Neue",sans-serif;font-size:22px;margin:6px 0 8px;text-transform:uppercase}
+  .step p{font-family:"Special Elite",monospace;font-size:13px;line-height:1.55;color:var(--ink-soft);margin:0}
+
+  /* FOOTER */
+  footer{
+    background:var(--ink);color:var(--paper);padding:48px 0 28px;margin-top:48px;border-top:4px solid var(--orange);
+  }
+  footer .container{display:grid;grid-template-columns: 1.4fr 1fr 1fr;gap:32px}
+  footer h4{font-family:"Bebas Neue",sans-serif;letter-spacing:.1em;font-size:18px;margin:0 0 12px;color:var(--orange)}
+  footer p, footer a{font-family:"Special Elite",monospace;font-size:13px;line-height:1.6;color:var(--paper);text-decoration:none}
+  footer a:hover{color:var(--orange)}
+  .disclaimer{
+    margin-top:36px;padding-top:18px;border-top:1px solid rgba(245,234,208,.2);
+    font-family:"JetBrains Mono",monospace;font-size:11px;color:rgba(245,234,208,.6);
+  }
+
+  /* Sticky now-playing */
+  .now-playing{
+    position:fixed;left:50%;bottom:20px;transform:translate(-50%,120%);
+    background:var(--ink);color:var(--paper);border:2px solid var(--orange);
+    display:flex;align-items:center;gap:14px;padding:10px 16px 22px 10px;z-index:10;
+    box-shadow:6px 6px 0 rgba(0,0,0,.4);
+    transition:transform .35s cubic-bezier(.2,.7,.2,1.2);
+    max-width:min(640px,94vw);
+    flex-wrap:nowrap;
+  }
+  .now-playing .nav-btn{
+    width:32px;height:32px;border-radius:50%;background:transparent;color:var(--paper);
+    border:2px solid var(--orange);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;flex:0 0 auto;padding:0;
+  }
+  .now-playing .nav-btn:hover{background:var(--orange);color:var(--ink)}
+  .np-progress{
+    position:absolute;left:0;right:0;bottom:0;height:10px;cursor:pointer;
+    background:rgba(245,234,208,.12);
+  }
+  .np-fill{
+    position:absolute;left:0;top:0;bottom:0;width:0;background:var(--orange);
+    transition:width .1s linear;
+  }
+  .np-times{
+    position:absolute;left:8px;right:8px;bottom:10px;display:flex;justify-content:space-between;
+    font-family:"JetBrains Mono",monospace;font-size:9px;color:rgba(245,234,208,.6);
+    pointer-events:none;
+  }
+  .now-playing.show{transform:translate(-50%,0)}
+  .now-playing img{width:48px;height:48px;object-fit:cover;border:2px solid var(--orange)}
+  .now-playing .info{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .now-playing .info .t{font-family:"Bebas Neue",sans-serif;font-size:18px;letter-spacing:.04em;line-height:1;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .now-playing .info .a{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--orange)}
+  .now-playing .ctrl{
+    width:38px;height:38px;border-radius:50%;background:var(--orange);color:var(--ink);
+    border:0;display:flex;align-items:center;justify-content:center;cursor:pointer;
+    flex:0 0 auto;
+  }
+  .now-playing .vol{
+    display:flex;align-items:center;gap:8px;padding-left:10px;border-left:1px solid rgba(245,234,208,.2);
+    margin-left:4px;
+  }
+  .now-playing .vol-btn{
+    background:transparent;border:0;color:var(--paper);cursor:pointer;display:flex;
+    width:30px;height:30px;align-items:center;justify-content:center;padding:0;
+  }
+  .now-playing .vol-btn:hover{color:var(--orange)}
+  .now-playing input[type=range]{
+    -webkit-appearance:none;appearance:none;background:transparent;width:90px;cursor:pointer;
+  }
+  .now-playing input[type=range]::-webkit-slider-runnable-track{
+    height:4px;background:linear-gradient(to right,var(--orange) var(--vol,80%),rgba(245,234,208,.25) var(--vol,80%));
+  }
+  .now-playing input[type=range]::-moz-range-track{
+    height:4px;background:rgba(245,234,208,.25);
+  }
+  .now-playing input[type=range]::-moz-range-progress{
+    height:4px;background:var(--orange);
+  }
+  .now-playing input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;
+    background:var(--paper);border:2px solid var(--orange);margin-top:-5px;cursor:pointer;
+  }
+  .now-playing input[type=range]::-moz-range-thumb{
+    width:14px;height:14px;border-radius:50%;background:var(--paper);border:2px solid var(--orange);cursor:pointer;
+  }
+  @media (max-width:640px){
+    .now-playing .vol input[type=range]{width:60px}
+  }
+
+  .toast{
+    position:fixed;left:50%;top:24px;transform:translate(-50%,-200%);
+    background:var(--ink);color:var(--paper);padding:12px 18px;
+    font-family:"Bebas Neue",sans-serif;letter-spacing:.1em;font-size:14px;
+    border:2px solid var(--orange);z-index:99;transition:transform .3s;
+  }
+  .toast.show{transform:translate(-50%,0)}
+
+  /* ============ MOBILE / TABLET ============ */
+  @media (max-width: 880px){
+    .container{padding:0 18px}
+    .topbar{padding:14px 18px}
+    .nav{display:none}
+
+    .hero{padding:32px 0 18px}
+    .hero-grid{grid-template-columns:1fr;gap:24px}
+    .hero-art{box-shadow:6px 6px 0 var(--ink)}
+    .hero-copy h1{font-size:clamp(48px,12vw,84px)}
+    .hero-copy .lede{font-size:16px;margin:14px 0 18px}
+
+    .ca-strip{grid-template-columns:1fr;box-shadow:4px 4px 0 var(--ink)}
+    .ca-strip .lbl{border-right:0;border-bottom:2px solid var(--ink);padding:10px 14px}
+    .ca-strip .ca{font-size:12px;padding:12px 14px}
+    .ca-strip .copy{border-left:0;border-top:2px solid var(--ink);padding:14px}
+
+    section{padding:48px 0}
+    .section-head{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:24px;padding-bottom:12px}
+    .section-head h2{font-size:clamp(40px,9vw,60px)}
+    .section-head .num{font-size:12px;letter-spacing:.18em}
+
+    /* mobile: swipe carousel */
+    .tracks{
+      display:flex;grid-template-columns:none;
+      overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;
+      gap:14px;padding:8px 18px 20px;margin:0 -18px;
+      scrollbar-width:none;
+    }
+    .tracks::-webkit-scrollbar{display:none}
+    .tracks .track{
+      flex:0 0 calc(100% - 60px);
+      scroll-snap-align:center;
+      box-shadow:5px 5px 0 var(--ink);
+    }
+    .play-btn{width:64px;height:64px}
+    .tracks-dots{
+      display:flex;justify-content:center;gap:10px;margin-top:18px;
+    }
+    .tracks-dots button{
+      width:11px;height:11px;border-radius:50%;
+      border:2px solid var(--ink);background:var(--paper);padding:0;cursor:pointer;
+      transition:background .2s, transform .15s;
+    }
+    .tracks-dots button.active{background:var(--orange);transform:scale(1.2)}
+
+    .bull-grid{grid-template-columns:1fr;gap:18px}
+    .bull{padding:22px;box-shadow:5px 5px 0 var(--ink)}
+    .bull .big{font-size:54px}
+
+    .tonomics{grid-template-columns:1fr;gap:24px}
+    .stat-row{grid-template-columns:1fr 1fr;gap:12px}
+    .stat{padding:16px;box-shadow:4px 4px 0 var(--ink)}
+    .stat .v{font-size:26px}
+    .pie-card{padding:20px;box-shadow:5px 5px 0 var(--ink)}
+    .pie-wrap{flex-direction:column;align-items:flex-start;gap:16px}
+    .pie{width:150px;height:150px;flex:0 0 150px}
+
+    .road{padding:22px;box-shadow:6px 6px 0 var(--ink)}
+    .road-grid{grid-template-columns:1fr 1fr;gap:22px}
+    .road-grid::before{display:none}
+    .stage .pin{width:52px;height:52px;font-size:18px}
+    .stage h4{font-size:20px}
+
+    .steps{grid-template-columns:1fr;gap:26px;margin-top:8px}
+    .step{padding:20px 18px;box-shadow:5px 5px 0 var(--ink)}
+    .step .n{top:-14px;left:-10px;width:40px;height:40px;font-size:22px}
+
+    .social-grid{grid-template-columns:1fr;gap:14px}
+    .social{box-shadow:4px 4px 0 var(--ink)}
+    .social .name{font-size:22px}
+
+    .cta-row{flex-direction:column;align-items:stretch}
+    .cta-row .btn{width:100%;justify-content:center}
+
+    footer{padding:36px 0 22px}
+    footer .container{grid-template-columns:1fr;gap:22px}
+
+    .now-playing{
+      left:8px;right:8px;bottom:8px;
+      transform:translate(0,150%);
+      max-width:none;flex-wrap:wrap;
+      padding:10px 12px;gap:10px 8px;
+      align-items:center;
+    }
+    .now-playing.show{transform:translate(0,0)}
+    .now-playing img{width:42px;height:42px;order:1}
+    .now-playing .info{flex:1 1 100px;min-width:0;order:2}
+    .now-playing .info .t{font-size:15px}
+    .now-playing #npPrev{order:3}
+    .now-playing .ctrl{order:4;width:36px;height:36px}
+    .now-playing #npNext{order:5}
+    .now-playing .nav-btn{width:30px;height:30px}
+
+    /* row 2: progress bar + volume side-by-side */
+    .np-progress{
+      position:relative;left:auto;right:auto;bottom:auto;
+      flex:1 1 55%;height:26px;order:6;
+      background:rgba(245,234,208,.14);
+      border:1px solid rgba(233,97,42,.45);
+      display:flex;align-items:center;
+    }
+    .np-fill{height:100%}
+    .np-times{
+      position:absolute;left:8px;right:8px;top:50%;bottom:auto;
+      transform:translateY(-50%);
+      font-size:11px;color:var(--paper);
+      display:flex;justify-content:space-between;
+      pointer-events:none;
+      text-shadow:0 0 3px rgba(20,18,16,.9);
+    }
+    .now-playing .vol{
+      flex:0 1 auto;order:7;
+      border-left:0;padding-left:0;margin-left:0;gap:6px;
+    }
+    .now-playing .vol input[type=range]{width:64px;min-width:0}
+  }
+
+  @media (max-width: 520px){
+    .container{padding:0 14px}
+    .ticker-track{font-size:14px;gap:30px}
+    .topbar{padding:12px 14px}
+    .brand{font-size:18px;gap:10px}
+    .brand .dot{width:11px;height:11px}
+    .topbar .brand > span:nth-child(3){display:none}
+
+    .hero-copy h1{font-size:clamp(40px,11vw,60px)}
+    .hero-copy h1 .tag{padding:0 10px}
+    .stamp{font-size:12px;padding:5px 10px}
+
+    .stat-row{grid-template-columns:1fr;gap:12px}
+    .road-grid{grid-template-columns:1fr;gap:20px}
+
+    .btn{font-size:16px;padding:12px 16px}
+  }
+</style>
+
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#efe3c7"/>
+    <circle cx="68" cy="42" r="22" fill="#e9612a"/>
+    <text x="50" y="82" text-anchor="middle" font-family="Bebas Neue, sans-serif" font-size="16" fill="#141210" font-weight="700">$DURIKOVICH</text>
+  </svg>
+</template>
+
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track" id="ticker"></div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="brand">
+    <span class="dot"></span>
+    <span>$DURIKOVICH</span>
+    <span style="opacity:.5;font-size:14px;letter-spacing:.2em">// TON</span>
+  </div>
+  <nav class="nav">
+    <a href="#tracks" data-i="nav.tracks">Треки</a>
+    <a href="#bull" data-i="nav.why">Почему</a>
+    <a href="#tonomics" data-i="nav.tonomics">Токеномика</a>
+    <a href="#how" data-i="nav.how">Как купить</a>
+    <a href="#socials" data-i="nav.social">Соцсети</a>
+  </nav>
+  <div class="lang" role="tablist">
+    <button class="active" data-lang="ru">RU</button>
+    <button data-lang="en">EN</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <div class="stamp" style="margin-bottom:18px">
+          <span class="pulse"></span>
+          <span data-i="hero.live">В ЭФИРЕ · TON MEMECOIN · BULLISH</span>
+        </div>
+        <h1>
+          <span data-i="hero.h1.line1">Свой</span><br/>
+          <span data-i="hero.h1.line2">Живой</span><br/>
+          <span data-i="hero.h1.line3">Интернет</span>
+          <br/>
+          <span class="tag">$DURIKOVICH</span>
+        </h1>
+        <p class="lede" data-i="hero.lede">
+          Дуров вернулся в FruityLoops — а мы строим вокруг этого мемкоин.
+          Слушайте треки. Держите токен. Гоняйте по своему живому интернету.
+        </p>
+        <div class="cta-row">
+          <a class="btn primary" href="https://t.me/dtrade?start=1H7dwejL1J_EQBSS2nSuO-vYy8g1kgCYVA7Mi4hpYZaUbwG1ZIRf_KBR4_q" target="_blank" rel="noopener" data-i="hero.cta1">Купить через DTRADE →</a>
+          <a class="btn dark" href="#tracks" data-i="hero.cta2">▶ Слушать треки</a>
+        </div>
+
+        <div class="ca-strip" id="caStrip">
+          <div class="lbl">CA · TON</div>
+          <div class="ca" id="ca">EQBSS2nSuO-vYy8g1kgCYVA7Mi4hpYZaUbwG1ZIRf_KBR4_q</div>
+          <button class="copy" id="copyBtn" data-i="hero.copy">КОПИРОВАТЬ</button>
+        </div>
+      </div>
+
+      <div class="hero-art">
+        <div class="stereo">СТЕРЕО<strong>33⅓</strong>ОБ/МИН</div>
+        <img src="assets/img/album-cover.jpg" alt="DURIKOVICH — Свой Живой Интернет" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRACKS -->
+<section id="tracks">
+  <div class="container">
+    <div class="section-head">
+      <h2 data-i="tracks.h2">Дискография</h2>
+      <span class="num">// 03 TRACKS · MORE COMING</span>
+    </div>
+    <div class="tracks" id="tracksList"></div>
+    <div class="tracks-dots" id="tracksDots" role="tablist" aria-label="Tracks"></div>
+  </div>
+</section>
+
+<!-- WHY BULLISH -->
+<section id="bull" style="background:var(--cream-2);border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)">
+  <div class="container">
+    <div class="section-head">
+      <h2 data-i="bull.h2">Почему буллишь</h2>
+      <span class="num">// REASONS TO HODL</span>
+    </div>
+    <div class="bull-grid">
+      <div class="bull">
+        <div class="big">01</div>
+        <h3 data-i="bull.1.h">Дуров пишет треки</h3>
+        <p data-i="bull.1.p">Создатель Telegram возродил детское хобби и публикует музыку под именем Durikovich. Уже 3 трека за неделю — это не флоп, это движение.</p>
+      </div>
+      <div class="bull">
+        <div class="big">02</div>
+        <h3 data-i="bull.2.h">TON под капотом</h3>
+        <p data-i="bull.2.p">Сеть The Open Network с миллиардом пользователей Telegram под боком. Ликвидность, Jetton-стандарт, дешёвые транзакции, нативные кошельки.</p>
+      </div>
+      <div class="bull">
+        <div class="big">03</div>
+        <h3 data-i="bull.3.h">Культурный момент</h3>
+        <p data-i="bull.3.p">«Свой живой интернет» — лозунг свободного веба. Мы делаем мемкоин не про собачек, а про пацана, который сам строит свой интернет.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TONOMICS -->
+<section id="tonomics">
+  <div class="container">
+    <div class="section-head">
+      <h2 data-i="ton.h2">Токеномика</h2>
+      <span class="num">// JETTON ON TON</span>
+    </div>
+    <div class="tonomics">
+      <div class="stat-row">
+        <div class="stat">
+          <div class="k">SUPPLY</div>
+          <div class="v">1,000,000,000</div>
+          <div class="s" data-i="ton.supply">Один миллиард — и ни Jetton'а больше.</div>
+        </div>
+        <div class="stat">
+          <div class="k">NETWORK</div>
+          <div class="v">TON</div>
+          <div class="s" data-i="ton.network">The Open Network · стандарт Jetton</div>
+        </div>
+        <div class="stat">
+          <div class="k">TAX</div>
+          <div class="v">0 / 0</div>
+          <div class="s" data-i="ton.tax">Никаких комиссий на покупку и продажу.</div>
+        </div>
+        <div class="stat">
+          <div class="k">LAUNCH</div>
+          <div class="v" data-i="ton.lp.v">ЧИСТЫЙ</div>
+          <div class="s" data-i="ton.lp.s">Без пресейлов, без VC, без команды-инсайдеров.</div>
+        </div>
+      </div>
+      <div class="pie-card">
+        <h3 style="font-family:'Bebas Neue';margin:0 0 14px;letter-spacing:.04em;font-size:24px" data-i="ton.dist">Распределение</h3>
+        <div class="pie-wrap">
+          <div class="pie" aria-hidden="true" style="background:var(--orange)"></div>
+          <div class="legend">
+            <div class="row"><span class="sw" style="background:var(--orange)"></span><span><b>100%</b> — <span data-i="ton.d1">Люди. Рынок. Нарратив.</span></span></div>
+            <div class="row" style="opacity:.7"><span class="sw" style="background:var(--paper)"></span><span><b>0%</b> — <span data-i="ton.d2">Команде / VC / пресейл</span></span></div>
+            <div class="row" style="opacity:.7"><span class="sw" style="background:var(--paper)"></span><span><b>0%</b> — <span data-i="ton.d3">Инсайдеры</span></span></div>
+          </div>
+        </div>
+        <p style="font-family:'Special Elite',monospace;font-size:13px;color:var(--ink-soft);margin:18px 0 0;line-height:1.5" data-i="ton.fair">Чистый запуск. 100% — рынку. Никто не сидит на мешке заранее.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="road" style="background:var(--cream-2);border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)">
+  <div class="container">
+    <div class="section-head">
+      <h2 data-i="road.h2">Дорожная карта</h2>
+      <span class="num">// MARCH ON</span>
+    </div>
+    <div class="road">
+      <div class="road-grid">
+        <div class="stage done">
+          <div class="pin">I</div>
+          <h4 data-i="road.1.h">Запуск</h4>
+          <p data-i="road.1.p">Деплой Jetton, посадка ликвидности на DeDust, первые холдеры из Telegram.</p>
+        </div>
+        <div class="stage done">
+          <div class="pin">II</div>
+          <h4 data-i="road.2.h">Музыка</h4>
+          <p data-i="road.2.p">3 трека Durikovich на сайте, виральные мемы в TG-чатах, обложки в винтажном стиле.</p>
+        </div>
+        <div class="stage">
+          <div class="pin">III</div>
+          <h4 data-i="road.3.h">Листинги</h4>
+          <p data-i="road.3.p">CEX-листинги, агрегаторы (DEXScreener / GeckoTerminal), стикерпак $DURIKOVICH.</p>
+        </div>
+        <div class="stage">
+          <div class="pin">IV</div>
+          <h4 data-i="road.4.h">Свой интернет</h4>
+          <p data-i="road.4.p">Мини-апп в Telegram: плеер, эирдропы за прослушивания, голосования за следующий трек.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO BUY -->
+<section id="how">
+  <div class="container">
+    <div class="section-head">
+      <h2 data-i="how.h2">Как купить</h2>
+      <span class="num">// 4 STEPS</span>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="n">1</div>
+        <h4 data-i="how.1.h">Кошелёк</h4>
+        <p data-i="how.1.p">Поставь Tonkeeper или открой кошелёк прямо в Telegram (@wallet).</p>
+      </div>
+      <div class="step"><div class="n">2</div>
+        <h4 data-i="how.2.h">Закинь TON</h4>
+        <p data-i="how.2.p">Купи TON на бирже или прямо в Telegram-кошельке через P2P / карту.</p>
+      </div>
+      <div class="step"><div class="n">3</div>
+        <h4 data-i="how.3.h">DTRADE — самый простой путь</h4>
+        <p data-i="how.3.p">Жми кнопку «DTRADE» ниже — бот в Telegram автоматически откроет страницу свапа $DURIKOVICH. Без копирования адресов.</p>
+      </div>
+      <div class="step"><div class="n">4</div>
+        <h4 data-i="how.4.h">Альтернатива: DEX</h4>
+        <p data-i="how.4.p">Можно через DeDust: вставь CA выше, slippage 1-3%, обменяй TON на $DURIKOVICH.</p>
+      </div>
+    </div>
+    <div class="cta-row" style="margin-top:28px">
+      <a class="btn primary" href="https://t.me/dtrade?start=1H7dwejL1J_EQBSS2nSuO-vYy8g1kgCYVA7Mi4hpYZaUbwG1ZIRf_KBR4_q" target="_blank" rel="noopener" data-i="how.btn.dtrade">DTRADE BOT — КУПИТЬ В 2 КЛИКА →</a>
+      <a class="btn" href="https://dedust.io/swap/TON/EQBSS2nSuO-vYy8g1kgCYVA7Mi4hpYZaUbwG1ZIRf_KBR4_q" target="_blank" rel="noopener">DeDust →</a>
+      <a class="btn" href="https://dexscreener.com/ton/EQBSS2nSuO-vYy8g1kgCYVA7Mi4hpYZaUbwG1ZIRf_KBR4_q" target="_blank" rel="noopener">DEXScreener →</a>
+      <a class="btn dark" href="https://tonviewer.com/EQBSS2nSuO-vYy8g1kgCYVA7Mi4hpYZaUbwG1ZIRf_KBR4_q" target="_blank" rel="noopener">Tonviewer →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIALS -->
+<section id="socials" style="background:var(--cream-2);border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)">
+  <div class="container">
+    <div class="section-head">
+      <h2 data-i="soc.h2">Дуров. Соцсети.</h2>
+      <span class="num">// FOLLOW THE FOUNDER</span>
+    </div>
+    <div class="social-grid">
+      <a class="social" href="https://t.me/durov" target="_blank" rel="noopener">
+        <div class="top">
+          <div>
+            <div class="name">Telegram</div>
+            <div class="handle">@durov</div>
+          </div>
+          <div class="ic">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9.78 16.42 9.62 19.6c.41 0 .59-.18.81-.4l1.95-1.86 4.04 2.95c.74.41 1.27.19 1.46-.69l2.65-12.41c.25-1.13-.41-1.58-1.13-1.31L3.42 10.62c-1.1.43-1.08 1.05-.19 1.33l3.97 1.24 9.22-5.81c.43-.28.83-.13.5.18z"/></svg>
+          </div>
+        </div>
+        <p style="margin:0;font-family:'Special Elite',monospace;font-size:13px;color:var(--ink-soft)" data-i="soc.tg">Канал Павла Дурова. Здесь рождаются треки и заявления.</p>
+      </a>
+
+      <a class="social" href="https://t.me/durov_russia" target="_blank" rel="noopener">
+        <div class="top">
+          <div>
+            <div class="name">TG Music</div>
+            <div class="handle">@durov_russia</div>
+          </div>
+          <div class="ic">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </div>
+        </div>
+        <p style="margin:0;font-family:'Special Elite',monospace;font-size:13px;color:var(--ink-soft)" data-i="soc.dur">Музыкальный псевдоним Дурова. Все релизы первыми сюда.</p>
+      </a>
+
+      <a class="social" href="https://x.com/durov" target="_blank" rel="noopener">
+        <div class="top">
+          <div>
+            <div class="name">X / Twitter</div>
+            <div class="handle">@durov</div>
+          </div>
+          <div class="ic">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2H21.5l-7.5 8.57L23 22h-6.85l-5.36-6.84L4.6 22H1.34l8.04-9.18L1 2h7l4.83 6.27L18.244 2zm-1.2 18h2L7 4h-2l12.044 16z"/></svg>
+          </div>
+        </div>
+        <p style="margin:0;font-family:'Special Elite',monospace;font-size:13px;color:var(--ink-soft)" data-i="soc.x">Английский фронт. Здесь Дуров троллит ЕС.</p>
+      </a>
+
+      <a class="social" href="https://www.instagram.com/durov" target="_blank" rel="noopener">
+        <div class="top">
+          <div>
+            <div class="name">Instagram</div>
+            <div class="handle">@durov</div>
+          </div>
+          <div class="ic">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <p style="margin:0;font-family:'Special Elite',monospace;font-size:13px;color:var(--ink-soft)" data-i="soc.ig">Лайфстайл, тренировки, котики и философия.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <h2 data-i="com.h2">Комьюнити</h2>
+      <span class="num">// JOIN THE MARCH</span>
+    </div>
+    <div class="cta-row">
+      <a class="btn primary" href="https://t.me/durikovich_portal" target="_blank" rel="noopener" data-i="com.tg">TG-портал @durikovich_portal →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div>
+      <h4 data-i="ft.brand">$DURIKOVICH</h4>
+      <p data-i="ft.tag">Свой живой интернет. Свой живой токен. На сети TON.</p>
+      <p style="margin-top:14px;word-break:break-all;font-size:11px;color:rgba(245,234,208,.7)">CA: EQBSS2nSuO-vYy8g1kgCYVA7Mi4hpYZaUbwG1ZIRf_KBR4_q</p>
+    </div>
+    <div>
+      <h4 data-i="ft.links">Ссылки</h4>
+      <p><a href="#tracks" data-i="ft.l1">Треки</a></p>
+      <p><a href="#tonomics" data-i="ft.l2">Токеномика</a></p>
+      <p><a href="#how" data-i="ft.l3">Как купить</a></p>
+      <p><a href="https://tonviewer.com/EQBSS2nSuO-vYy8g1kgCYVA7Mi4hpYZaUbwG1ZIRf_KBR4_q" target="_blank">Tonviewer</a></p>
+    </div>
+    <div>
+      <h4 data-i="ft.disc">Дисклеймер</h4>
+      <p data-i="ft.disc.p">Мемкоин. Не финансовый совет. DYOR. Покупайте только то, чего не страшно лишиться.</p>
+    </div>
+    <div class="disclaimer" style="grid-column:1/-1">
+      © 2026 $DURIKOVICH community · Unofficial fan project · Not affiliated with Telegram FZ-LLC or Pavel Durov
+    </div>
+  </div>
+</footer>
+
+<!-- Now Playing bar -->
+<div class="now-playing" id="nowPlaying">
+  <img id="npImg" alt="" />
+  <div class="info">
+    <div class="t" id="npTitle">—</div>
+    <div class="a">DURIKOVICH</div>
+  </div>
+  <button class="nav-btn" id="npPrev" aria-label="Prev">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zM9.5 12l9 6V6z"/></svg>
+  </button>
+  <button class="ctrl" id="npToggle" aria-label="Pause">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+  </button>
+  <button class="nav-btn" id="npNext" aria-label="Next">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 6h2v12h-2zM5.5 18l9-6-9-6z"/></svg>
+  </button>
+  <div class="vol">
+    <button class="vol-btn" id="volBtn" aria-label="Mute">
+      <svg id="volIcon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8.05v7.9A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z"/></svg>
+    </button>
+    <input type="range" id="volSlider" min="0" max="100" value="80" aria-label="Volume" />
+  </div>
+  <div class="np-progress" id="npProgress">
+    <div class="np-fill" id="npFill"></div>
+    <div class="np-times"><span id="npCur">00:00</span><span id="npDur">00:00</span></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">СКОПИРОВАНО</div>
+
+<script>
+/* ========== I18N ========== */
+const I18N = {
+  ru: {
+    'nav.tracks':'Треки','nav.why':'Почему','nav.tonomics':'Токеномика','nav.how':'Как купить','nav.social':'Соцсети',
+    'hero.live':'В ЭФИРЕ · TON MEMECOIN · BULLISH',
+    'hero.h1.line1':'Свой','hero.h1.line2':'Живой','hero.h1.line3':'Интернет',
+    'hero.lede':'Дуров вернулся в FruityLoops — а мы строим вокруг этого мемкоин. Слушайте треки. Держите токен. Гоняйте по своему живому интернету.',
+    'hero.cta1':'Купить через DTRADE →','hero.cta2':'▶ Слушать треки','hero.copy':'КОПИРОВАТЬ',
+    'tracks.h2':'Дискография',
+    'bull.h2':'Почему буллишь',
+    'bull.1.h':'Дуров пишет треки','bull.1.p':'Создатель Telegram возродил детское хобби и публикует музыку под именем Durikovich. Уже 3 трека за неделю — это не флоп, это движение.',
+    'bull.2.h':'TON под капотом','bull.2.p':'Сеть The Open Network с миллиардом пользователей Telegram под боком. Ликвидность, Jetton-стандарт, дешёвые транзакции, нативные кошельки.',
+    'bull.3.h':'Культурный момент','bull.3.p':'«Свой живой интернет» — лозунг свободного веба. Мы делаем мемкоин не про собачек, а про пацана, который сам строит свой интернет.',
+    'ton.h2':'Токеномика',
+    'ton.supply':'Один миллиард — и ни Jetton\'а больше.',
+    'ton.network':'The Open Network · стандарт Jetton',
+    'ton.tax':'Никаких комиссий на покупку и продажу.',
+    'ton.lp.v':'ЧИСТЫЙ','ton.lp.s':'Без пресейлов, без VC, без команды-инсайдеров.','ton.fair':'Чистый запуск. 100% — рынку. Никто не сидит на мешке заранее.',
+    'ton.dist':'Распределение',
+    'ton.d1':'Люди. Рынок. Нарратив.','ton.d2':'Команде / VC / пресейл','ton.d3':'Инсайдеры',
+    'road.h2':'Дорожная карта',
+    'road.1.h':'Запуск','road.1.p':'Деплой Jetton, посадка ликвидности на DeDust, первые холдеры из Telegram.',
+    'road.2.h':'Музыка','road.2.p':'3 трека Durikovich на сайте, виральные мемы в TG-чатах, обложки в винтажном стиле.',
+    'road.3.h':'Листинги','road.3.p':'CEX-листинги, агрегаторы (DEXScreener / GeckoTerminal), стикерпак $DURIKOVICH.',
+    'road.4.h':'Свой интернет','road.4.p':'Мини-апп в Telegram: плеер, эирдропы за прослушивания, голосования за следующий трек.',
+    'how.h2':'Как купить',
+    'how.1.h':'Кошелёк','how.1.p':'Поставь Tonkeeper или открой кошелёк прямо в Telegram (@wallet).',
+    'how.2.h':'Закинь TON','how.2.p':'Купи TON на бирже или прямо в Telegram-кошельке через P2P / карту.',
+    'how.3.h':'DTRADE — самый простой путь','how.3.p':'Жми кнопку «DTRADE» ниже — бот в Telegram автоматически откроет страницу свапа $DURIKOVICH. Без копирования адресов.',
+    'how.4.h':'Альтернатива: DEX','how.4.p':'Можно через DeDust: вставь CA выше, slippage 1-3%, обменяй TON на $DURIKOVICH.',
+    'how.btn.dtrade':'DTRADE BOT — КУПИТЬ В 2 КЛИКА →',
+    'soc.h2':'Дуров. Соцсети.',
+    'soc.tg':'Канал Павла Дурова. Здесь рождаются треки и заявления.',
+    'soc.dur':'Музыкальный псевдоним Дурова. Все релизы первыми сюда.',
+    'soc.x':'Английский фронт. Здесь Дуров троллит ЕС.',
+    'soc.ig':'Лайфстайл, тренировки, котики и философия.',
+    'com.h2':'Комьюнити','com.tg':'TG-портал @durikovich_portal →',
+    'ft.brand':'$DURIKOVICH','ft.tag':'Свой живой интернет. Свой живой токен. На сети TON.',
+    'ft.links':'Ссылки','ft.l1':'Треки','ft.l2':'Токеномика','ft.l3':'Как купить',
+    'ft.disc':'Дисклеймер','ft.disc.p':'Мемкоин. Не финансовый совет. DYOR. Покупайте только то, чего не страшно лишиться.',
+    'toast.copied':'СКОПИРОВАНО',
+    'np.now':'Сейчас играет',
+    'ticker': ['$DURIKOVICH','BULLISH ON TON','СВОЙ ЖИВОЙ ИНТЕРНЕТ','ЭХ ВПНЫ ВЕРНЫЕ','MEMECOIN ON TON','LP BURNED','0/0 TAX','POWERED BY TELEGRAM ENERGY','HODL THE MARCH']
+  },
+  en: {
+    'nav.tracks':'Tracks','nav.why':'Why','nav.tonomics':'Tokenomics','nav.how':'How to buy','nav.social':'Socials',
+    'hero.live':'LIVE · TON MEMECOIN · BULLISH',
+    'hero.h1.line1':'Your Own','hero.h1.line2':'Living','hero.h1.line3':'Internet',
+    'hero.lede':'Durov is back in FruityLoops — we built a memecoin around it. Listen to the tracks. Hold the token. Cruise your own living internet.',
+    'hero.cta1':'Buy via DTRADE →','hero.cta2':'▶ Play tracks','hero.copy':'COPY',
+    'tracks.h2':'Discography',
+    'bull.h2':'Why bullish',
+    'bull.1.h':'Durov makes tracks','bull.1.p':'The Telegram founder revived a childhood hobby and drops music as Durikovich. Three tracks in a week — that\'s not a flop, that\'s a movement.',
+    'bull.2.h':'Powered by TON','bull.2.p':'The Open Network sits next to a billion Telegram users. Liquidity, Jetton standard, cheap fees, native wallets.',
+    'bull.3.h':'Cultural moment','bull.3.p':'"Your own living internet" is the slogan of a free web. This memecoin isn\'t about dogs — it\'s about a guy building his own internet.',
+    'ton.h2':'Tokenomics',
+    'ton.supply':'One billion. Not a Jetton more.',
+    'ton.network':'The Open Network · Jetton standard',
+    'ton.tax':'Zero buy / sell tax.',
+    'ton.lp.v':'CLEAN','ton.lp.s':'No presale. No VC. No insider team allocation.','ton.fair':'Clean launch. 100% to the market. Nobody is sitting on a fat bag.',
+    'ton.dist':'Distribution',
+    'ton.d1':'People. Market. Narrative.','ton.d2':'Team / VC / presale','ton.d3':'Insiders',
+    'road.h2':'Roadmap',
+    'road.1.h':'Launch','road.1.p':'Deploy Jetton, seed liquidity on DeDust, first holders from Telegram.',
+    'road.2.h':'Music','road.2.p':'Three Durikovich tracks on site, viral memes in TG chats, vintage covers.',
+    'road.3.h':'Listings','road.3.p':'CEX listings, aggregators (DEXScreener / GeckoTerminal), $DURIKOVICH sticker pack.',
+    'road.4.h':'Own internet','road.4.p':'Telegram mini-app: in-app player, listen-to-earn drops, voting for the next track.',
+    'how.h2':'How to buy',
+    'how.1.h':'Wallet','how.1.p':'Install Tonkeeper or open the @wallet bot inside Telegram.',
+    'how.2.h':'Top up TON','how.2.p':'Buy TON on a CEX or right inside Telegram via P2P / card.',
+    'how.3.h':'DTRADE — easiest way','how.3.p':'Hit the DTRADE button below — a Telegram bot opens the $DURIKOVICH swap page automatically. No copy-pasting addresses.',
+    'how.4.h':'Alt: DEX','how.4.p':'Or use DeDust: paste the CA above, slippage 1-3%, swap TON for $DURIKOVICH.',
+    'how.btn.dtrade':'DTRADE BOT — BUY IN 2 CLICKS →',
+    'soc.h2':'Durov. Socials.',
+    'soc.tg':'Pavel Durov\'s personal channel. Tracks and statements drop here.',
+    'soc.dur':'Durov\'s music alias. New releases land here first.',
+    'soc.x':'The English front. Durov roasts the EU here.',
+    'soc.ig':'Lifestyle, training, cats and philosophy.',
+    'com.h2':'Community','com.tg':'TG portal @durikovich_portal →',
+    'ft.brand':'$DURIKOVICH','ft.tag':'Your own living internet. Your own living token. On TON.',
+    'ft.links':'Links','ft.l1':'Tracks','ft.l2':'Tokenomics','ft.l3':'How to buy',
+    'ft.disc':'Disclaimer','ft.disc.p':'Memecoin. Not financial advice. DYOR. Only spend what you can afford to lose.',
+    'toast.copied':'COPIED',
+    'np.now':'Now playing',
+    'ticker': ['$DURIKOVICH','BULLISH ON TON','YOUR OWN LIVING INTERNET','EH VPNS LOYAL','MEMECOIN ON TON','LP BURNED','0/0 TAX','POWERED BY TELEGRAM ENERGY','HODL THE MARCH']
+  }
+};
+
+const TRACKS = [
+  {
+    id:'zhivoy',
+    title_ru:'Свой Живой Интернет', title_en:'Your Own Living Internet',
+    cover:'assets/img/cover-zhivoy.jpg',
+    src:'assets/audio/svoy-zhivoy-internet.mp3',
+    duration:'03:22'
+  },
+  {
+    id:'vpn-ru',
+    title_ru:'Эх ВПНы Верные', title_en:'Eh VPNs, Loyal Ones',
+    cover:'assets/img/cover-vpn-ru.jpg',
+    src:'assets/audio/ekh-vpny-vernye-ru.mp3',
+    duration:'03:13'
+  },
+  {
+    id:'vpn-en',
+    title_ru:'Эх VPNы Верные (Имперская)', title_en:'Eh VPNs, Loyal (Imperial)',
+    cover:'assets/img/cover-vpn-en.jpg',
+    src:'assets/audio/ekh-vpny-vernye-en.mp3',
+    duration:'03:29'
+  }
+];
+
+let currentLang = 'ru';
+let currentAudio = null;
+let currentTrack = null;
+
+function applyLang(lang){
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    const k = el.dataset.i;
+    if(I18N[lang][k] != null) el.textContent = I18N[lang][k];
+  });
+  document.querySelectorAll('.lang button').forEach(b=>b.classList.toggle('active', b.dataset.lang===lang));
+  // Re-render tracks (titles change with locale)
+  renderTracks();
+  // Ticker
+  renderTicker();
+}
+
+function renderTicker(){
+  const t = document.getElementById('ticker');
+  const arr = I18N[currentLang]['ticker'];
+  const oneSet = arr.map(s=>`<span><i></i>${s}</span>`).join('');
+  t.innerHTML = oneSet + oneSet; // duplicated for seamless loop
+}
+
+const isCarousel = ()=>window.matchMedia('(max-width: 880px)').matches;
+
+function renderDots(){
+  const dots = document.getElementById('tracksDots');
+  dots.innerHTML = '';
+  TRACKS.forEach((tr, idx)=>{
+    const b = document.createElement('button');
+    b.type='button';
+    b.dataset.idx = idx;
+    b.setAttribute('aria-label', (currentLang==='ru'?tr.title_ru:tr.title_en));
+    if(idx===0) b.classList.add('active');
+    b.addEventListener('click', ()=>scrollToTrack(idx, true));
+    dots.appendChild(b);
+  });
+}
+
+function scrollToTrack(idx, smooth){
+  const list = document.getElementById('tracksList');
+  const card = list.children[idx];
+  if(!card) return;
+  if(isCarousel()){
+    list.scrollTo({left: card.offsetLeft - list.offsetLeft - (list.clientWidth - card.clientWidth)/2, behavior: smooth?'smooth':'auto'});
+  }
+  setActiveDot(idx);
+}
+
+function setActiveDot(idx){
+  document.querySelectorAll('#tracksDots button').forEach((b,i)=>b.classList.toggle('active', i===idx));
+}
+
+function wireCarouselScroll(){
+  const list = document.getElementById('tracksList');
+  let raf=0;
+  list.addEventListener('scroll', ()=>{
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(()=>{
+      if(!isCarousel()) return;
+      const center = list.scrollLeft + list.clientWidth/2;
+      let bestIdx=0, bestDist=Infinity;
+      [...list.children].forEach((c,i)=>{
+        const cc = c.offsetLeft + c.clientWidth/2 - list.offsetLeft;
+        const d = Math.abs(cc - center);
+        if(d<bestDist){bestDist=d;bestIdx=i;}
+      });
+      setActiveDot(bestIdx);
+    });
+  });
+}
+
+function renderTracks(){
+  const list = document.getElementById('tracksList');
+  list.innerHTML = '';
+  TRACKS.forEach((tr, idx)=>{
+    const title = currentLang==='ru' ? tr.title_ru : tr.title_en;
+    const num = String(idx+1).padStart(2,'0');
+    const el = document.createElement('div');
+    el.className = 'track';
+    el.dataset.id = tr.id;
+    el.innerHTML = `
+      <div class="cover">
+        <img src="${tr.cover}" alt="${title}" />
+        <div class="play-overlay">
+          <button class="play-btn" data-action="play" aria-label="Play">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="track-info">
+        <span class="num">// TRACK ${num}</span>
+        <span class="title">${title}</span>
+        <span class="artist">DURIKOVICH · ${tr.duration}</span>
+      </div>
+      <div class="progress" data-action="seek"><div class="fill"></div></div>
+      <div class="meta">
+        <span class="cur">00:00</span>
+        <span class="dur">${tr.duration}</span>
+        <button class="like-btn" data-action="like" aria-label="Like" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="like-count">—</span>
+        </button>
+      </div>
+    `;
+    list.appendChild(el);
+  });
+  // wire
+  list.querySelectorAll('.track').forEach(el=>{
+    const id = el.dataset.id;
+    el.querySelector('[data-action="play"]').addEventListener('click', e=>{ e.stopPropagation(); playTrack(id); });
+    el.querySelector('.cover').addEventListener('click', ()=>playTrack(id));
+    el.querySelector('[data-action="seek"]').addEventListener('click', e=>{
+      if(!currentAudio || currentTrack !== id){ playTrack(id); return; }
+      const r = e.currentTarget.getBoundingClientRect();
+      const p = (e.clientX - r.left)/r.width;
+      currentAudio.currentTime = p * (currentAudio.duration||0);
+    });
+    const likeBtn = el.querySelector('[data-action="like"]');
+    likeBtn.addEventListener('click', e=>{ e.stopPropagation(); onLikeClick(id, el); });
+    if(localStorage.getItem('durikovich.liked.'+id)==='1') likeBtn.classList.add('liked');
+    fetchLikeCount(id).then(n=>{
+      el.querySelector('.like-count').textContent = n;
+    });
+  });
+  renderDots();
+}
+
+/* ========== LIKES (global counter via abacus.jasoncameron.dev) ========== */
+const LIKES_NS = 'durikovich-likes-2026';
+async function fetchLikeCount(id){
+  try{
+    const r = await fetch(`https://abacus.jasoncameron.dev/get/${LIKES_NS}/${id}`);
+    if(r.ok){ const j = await r.json(); return j.value ?? 0; }
+    if(r.status === 404){
+      const c = await fetch(`https://abacus.jasoncameron.dev/create/${LIKES_NS}/${id}?value=0`);
+      if(c.ok){ const j = await c.json(); return j.value ?? 0; }
+    }
+  }catch(e){}
+  return 0;
+}
+async function bumpLike(id){
+  try{
+    const r = await fetch(`https://abacus.jasoncameron.dev/hit/${LIKES_NS}/${id}`);
+    if(r.ok){ const j = await r.json(); return j.value ?? null; }
+  }catch(e){}
+  return null;
+}
+async function onLikeClick(id, card){
+  const k = 'durikovich.liked.'+id;
+  if(localStorage.getItem(k) === '1') return;
+  const btn = card.querySelector('.like-btn');
+  const cnt = btn.querySelector('.like-count');
+  const before = parseInt(cnt.textContent,10);
+  btn.classList.add('liked');
+  localStorage.setItem(k,'1');
+  if(isFinite(before)) cnt.textContent = before + 1;
+  const v = await bumpLike(id);
+  if(v != null) cnt.textContent = v;
+}
+
+function playTrack(id){
+  const tr = TRACKS.find(t=>t.id===id);
+  if(!tr) return;
+  // toggle if same
+  if(currentTrack === id && currentAudio){
+    if(currentAudio.paused) currentAudio.play(); else currentAudio.pause();
+    updateNPToggleIcon();
+    return;
+  }
+  // stop existing
+  if(currentAudio){ currentAudio.pause(); currentAudio = null; }
+  // reset all play btns visually
+  document.querySelectorAll('.track .play-btn').forEach(b=>{
+    b.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+  });
+  document.querySelectorAll('.track .progress .fill').forEach(f=>f.style.width='0%');
+  document.querySelectorAll('.track .meta .cur').forEach(c=>c.textContent='00:00');
+
+  const audio = new Audio(tr.src);
+  audio.volume = isMuted ? 0 : savedVolume;
+  audio.play().catch(err=>console.warn('play failed', err));
+  currentAudio = audio;
+  currentTrack = id;
+
+  // change icon to pause for that card
+  const card = document.querySelector(`.track[data-id="${id}"]`);
+  if(card){
+    card.querySelector('.play-btn').innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+  }
+  // scroll carousel to active track on mobile
+  const trackIdx = TRACKS.findIndex(t=>t.id===id);
+  if(trackIdx>=0) scrollToTrack(trackIdx, true);
+  // now playing
+  const np = document.getElementById('nowPlaying');
+  document.getElementById('npImg').src = tr.cover;
+  document.getElementById('npTitle').textContent = currentLang==='ru'?tr.title_ru:tr.title_en;
+  np.classList.add('show');
+  updateNPToggleIcon();
+
+  audio.addEventListener('timeupdate', ()=>{
+    if(!audio.duration) return;
+    const pct = (audio.currentTime/audio.duration)*100;
+    const fill = card?.querySelector('.progress .fill');
+    if(fill) fill.style.width = pct + '%';
+    const cur = card?.querySelector('.meta .cur');
+    if(cur) cur.textContent = fmtTime(audio.currentTime);
+    // np bar
+    const npFill = document.getElementById('npFill');
+    if(npFill) npFill.style.width = pct + '%';
+    const npCur = document.getElementById('npCur');
+    if(npCur) npCur.textContent = fmtTime(audio.currentTime);
+    const npDur = document.getElementById('npDur');
+    if(npDur) npDur.textContent = fmtTime(audio.duration);
+  });
+  audio.addEventListener('ended', ()=>{
+    if(card){
+      card.querySelector('.play-btn').innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+      card.querySelector('.progress .fill').style.width = '0%';
+    }
+    // auto-next
+    const idx = TRACKS.findIndex(t=>t.id===id);
+    const next = TRACKS[(idx+1)%TRACKS.length];
+    playTrack(next.id);
+  });
+  audio.addEventListener('pause', updateNPToggleIcon);
+  audio.addEventListener('play', updateNPToggleIcon);
+}
+
+function updateNPToggleIcon(){
+  const btn = document.getElementById('npToggle');
+  if(!currentAudio || currentAudio.paused){
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+  } else {
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+  }
+}
+
+function fmtTime(s){
+  if(!isFinite(s)) return '00:00';
+  const m = Math.floor(s/60), ss = Math.floor(s%60);
+  return String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0');
+}
+
+document.getElementById('npToggle').addEventListener('click', ()=>{
+  if(!currentAudio) return;
+  if(currentAudio.paused) currentAudio.play(); else currentAudio.pause();
+});
+
+function gotoTrack(delta){
+  const idx = TRACKS.findIndex(t=>t.id===currentTrack);
+  const start = idx === -1 ? 0 : idx;
+  const next = TRACKS[(start + delta + TRACKS.length) % TRACKS.length];
+  playTrack(next.id);
+}
+document.getElementById('npPrev').addEventListener('click', ()=>gotoTrack(-1));
+document.getElementById('npNext').addEventListener('click', ()=>gotoTrack(1));
+
+document.getElementById('npProgress').addEventListener('click', e=>{
+  if(!currentAudio || !currentAudio.duration) return;
+  const r = e.currentTarget.getBoundingClientRect();
+  const p = (e.clientX - r.left)/r.width;
+  currentAudio.currentTime = p * currentAudio.duration;
+});
+
+/* Volume control */
+const VOL_KEY = 'durikovich.volume';
+const MUTE_KEY = 'durikovich.muted';
+let savedVolume = parseFloat(localStorage.getItem(VOL_KEY));
+if(!isFinite(savedVolume)) savedVolume = 0.8;
+let isMuted = localStorage.getItem(MUTE_KEY) === '1';
+
+const volSlider = document.getElementById('volSlider');
+const volBtn = document.getElementById('volBtn');
+const volIcon = document.getElementById('volIcon');
+
+function applyVolume(){
+  const v = isMuted ? 0 : savedVolume;
+  if(currentAudio) currentAudio.volume = v;
+  volSlider.value = Math.round(savedVolume*100);
+  volSlider.style.setProperty('--vol', (isMuted?0:savedVolume*100)+'%');
+  // icons: muted, low, high
+  let path;
+  if(isMuted || savedVolume === 0){
+    path = '<path d="M3 10v4h4l5 5V5L7 10H3zm13.59 2L19 9.59 17.59 8 15 10.59 12.41 8 11 9.59 13.59 12 11 14.41 12.41 16 15 13.41 17.59 16 19 14.41z"/>';
+  } else if(savedVolume < 0.5){
+    path = '<path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8.05v7.9A4.5 4.5 0 0 0 16.5 12z"/>';
+  } else {
+    path = '<path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2A4.5 4.5 0 0 0 14 8.05v7.9A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z"/>';
+  }
+  volIcon.innerHTML = path;
+}
+
+volSlider.addEventListener('input', ()=>{
+  savedVolume = parseInt(volSlider.value,10)/100;
+  isMuted = false;
+  localStorage.setItem(VOL_KEY, String(savedVolume));
+  localStorage.setItem(MUTE_KEY, '0');
+  applyVolume();
+});
+volBtn.addEventListener('click', ()=>{
+  isMuted = !isMuted;
+  localStorage.setItem(MUTE_KEY, isMuted?'1':'0');
+  applyVolume();
+});
+applyVolume();
+
+/* Language switch */
+document.querySelectorAll('.lang button').forEach(b=>{
+  b.addEventListener('click', ()=>applyLang(b.dataset.lang));
+});
+
+/* Copy CA */
+document.getElementById('copyBtn').addEventListener('click', async ()=>{
+  const ca = document.getElementById('ca').textContent.trim();
+  try{ await navigator.clipboard.writeText(ca); }catch(e){}
+  const t = document.getElementById('toast');
+  t.textContent = I18N[currentLang]['toast.copied'];
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1400);
+});
+
+/* Init */
+applyLang('ru');
+wireCarouselScroll();
+</script>
+
+</body>
+</html>
